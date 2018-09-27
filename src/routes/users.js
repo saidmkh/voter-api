@@ -1,13 +1,10 @@
 const express = require('express')
 
-let router = express.Router()
+const router = express.Router()
 
-router.get('/users', (req, res) => {
-  res.send('users route')
-})
+const UserController = require('../controllers/user')
 
-router.get('/users/:id', (req, res) => {
-  res.send(`users id #${req.params.id}`)
-})
+router.post('/api/v1/register', UserController.create)
+router.post('/api/v1/authenticate', UserController.authenticate)
 
 module.exports = router

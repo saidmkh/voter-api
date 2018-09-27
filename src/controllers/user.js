@@ -1,3 +1,54 @@
 const UserModel = require('../models/user_model')
 const bcrypt = require('bcrypt')
-const jwt = require('json')
+const jwt = require('jsonwebtoken')
+
+module.exports = {
+  create: function(req, res, next) {
+    UserModel.create(
+      {
+        email: req.body.email,
+        hash: req.body.hash,
+        photo: req.body.photo
+      },
+      function(err, result) {
+        if (err) next(err)
+        else {
+          res.json({
+            status: 'success',
+            message: 'user added',
+            data: null
+          })
+        }
+      }
+    )
+  },
+
+  authenticate: function(req, res, next) {
+    UserModel.findOne({ email: req.body.email }, function(err, userInfo) {
+      if (err) next(err)
+      else {
+        if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+          const token = jwt.sign(
+            { id: userInfo._id },
+            req.app.get('secretKey'),
+            { expiresIn: '1h' }
+          )
+          res.json({
+            status: 'success',
+            message: 'user found',
+            data: {
+              userInfo,
+              token: token
+            }
+          })
+        } else {
+          res.json({
+            status: 'erroe',
+            message: 'invalid email or password',
+            data: null
+          })
+        }
+      }
+    })
+  }
+}

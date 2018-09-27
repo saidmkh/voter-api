@@ -1,12 +1,15 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const saltRounds = 10
+
+const Schema = mongoose.Schema
+const saltRounds = 12
 
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     require: true,
-    unique: true
+    unique: true,
+    trim: true
   },
   hash: String,
   photo: String,
