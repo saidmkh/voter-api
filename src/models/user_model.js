@@ -25,7 +25,15 @@ const UserSchema = new mongoose.Schema({
       type: Schema.Types.ObjectId,
       ref: 'Answer'
     }
-  ]
+  ],
+  verify_code: {
+    type: String,
+    required: true
+  },
+  confirmed_code: {
+    type: String,
+    required: true
+  }
 })
 
 UserSchema.pre('save', function(next) {
