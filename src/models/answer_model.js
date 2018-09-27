@@ -5,11 +5,18 @@ const Schema = mongoose.Schema
 const AnswerSchema = new mongoose.Schema({
   text: {
     type: String,
+    required: true,
     min: 1,
     max: 100
   },
-  number: Number,
-  replies: Number,
+  number: {
+    type: Number,
+    required: true
+  },
+  replies: {
+    type: Number,
+    required: true
+  },
   question: [
     {
       type: Schema.Types.ObjectId,

@@ -11,8 +11,15 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
-  hash: String,
-  photo: String,
+  password: {
+    type: String,
+    required: true
+  },
+  photo: {
+    type: String,
+    required: true,
+    default: ''
+  },
   answers: [
     {
       type: Schema.Types.ObjectId,
