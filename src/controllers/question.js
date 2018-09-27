@@ -1,20 +1,6 @@
 const QuestionModel = require('../models/question_model')
 
 module.exports = {
-  getById: function(req, res, next) {
-    console.log(req.body)
-    QuestionModel.findById(req.params.questionId, function(err, questionInfo) {
-      if (err) next(err)
-      else {
-        res.json({
-          status: 'success',
-          message: 'question found',
-          data: { questions: questionInfo }
-        })
-      }
-    })
-  },
-
   getAll: function(req, res, next) {
     let questionList = []
 
@@ -35,6 +21,36 @@ module.exports = {
         })
       }
     })
+  },
+
+  getById: function(req, res, next) {
+    console.log(req.body)
+    QuestionModel.findById(req.params.questionId, function(err, questionInfo) {
+      if (err) next(err)
+      else {
+        res.json({
+          status: 'success',
+          message: 'question found',
+          data: { questions: questionInfo }
+        })
+      }
+    })
+  },
+
+  create: function(req, res, next) {
+    QuestionModel.create(
+      { text: req.body.text, answers_count: req.body.answers_count },
+      function(err, result) {
+        if (err) next(err)
+        else {
+          res.json({
+            status: 'success',
+            message: 'question created',
+            data: null
+          })
+        }
+      }
+    )
   },
 
   updateById: function(req, res, next) {
@@ -70,21 +86,5 @@ module.exports = {
         })
       }
     })
-  },
-
-  create: function(req, res, next) {
-    QuestionModel.create(
-      { text: req.body.text, answers_count: req.body.answers_count },
-      function(err, result) {
-        if (err) next(err)
-        else {
-          res.json({
-            status: 'success',
-            message: 'question created',
-            data: null
-          })
-        }
-      }
-    )
   }
 }

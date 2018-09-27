@@ -2,24 +2,11 @@ const express = require('express')
 
 const router = express.Router()
 
-router.get('/api/v1/answers', (req, res) => {
-  if (req.query.id) {
-    res.send(`${req.query.id}`)
-  } else {
-    res.send('GET answers')
-  }
-})
+const AnswerController = require('../controllers/answer')
 
-router.get('/api/v1/answers/:id', (req, res) => {
-  res.send(`GET answer ${req.params.id}`)
-})
-
-router.post('/api/v1/answers/', (req, res) => {
-  if (!req.body) {
-    res.status(400).res.send('Request body is missing')
-  } else {
-    res.send('POST answer')
-  }
-})
+router.get('/api/v1/answers/:answerId', AnswerController.getById)
+router.post('/api/v1/answers/', AnswerController.create)
+router.put('/api/v1/answers/:answerId', AnswerController.updateById)
+router.delete('/api/v1/answers/:answerId', AnswerController.deleteById)
 
 module.exports = router
