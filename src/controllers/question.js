@@ -1,27 +1,12 @@
 const QuestionModel = require('../models/question_model')
-const AnswersModel = require('../models/answer_model')
+const AnswerModel = require('../models/answer_model')
 
 module.exports = {
   getAll: function(req, res, next) {
-    let questionList = []
-
-    QuestionModel.find({}, function(err, questions) {
-      if (err) next(err)
-      else {
-        for (let question of questions) {
-          questionList.push({
-            id: question._id,
-            text: question.text,
-            answers: question.answers
-          })
-        }
-        res.json({
-          status: 'success',
-          message: 'question list found',
-          data: { questions: questionList }
-        })
-      }
-    })
+    QuestionModel.find()
+      .populate('answers')
+      .then(questions => res.json(questions))
+      .catch(err => res.status(404).json({ status: err, message: message.err }))
   },
 
   getById: function(req, res, next) {
@@ -39,28 +24,25 @@ module.exports = {
   },
 
   create: function(req, res, next) {
-    QuestionModel.create(
-      { text: req.body.text, answers: answers._id },
-      function(err, result) {
-        if (err) next(err)
-        else {
-          res.json({
-            status: 'success',
-            message: 'question created',
-            data: null
-          })
-        }
+    QuestionModel.create({ text: req.body.text }, function(err, result) {
+      if (err) next(err)
+      else {
+        res.json({
+          status: 'success',
+          message: 'question created',
+          data: null
+        })
       }
-    )
+    })
   },
 
   updateById: function(req, res, next) {
-    AnswersModel.findOne(req.params.answerId).then(answer => {
+    AnswerModel.findOne(req.params.answerId).then(answer => {
       QuestionModel.findByIdAndUpdate(
         req.params.questionId,
         {
           text: req.body.text,
-          answer: answer._id
+          answers: answer._id
         },
         function(err, result) {
           if (err) next(err)

@@ -1,4 +1,5 @@
 const UserModel = require('../models/user_model')
+const AnswerModel = require('../models/answer_model')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -50,6 +51,27 @@ module.exports = {
           })
         }
       }
+    })
+  },
+
+  updateAnswerById: function(req, res, next) {
+    AnswerModel.findOne(req.params.answerId).then(answer => {
+      UserModel.findByIdAndUpdate(
+        req.params.userId,
+        {
+          answers: answer._id
+        },
+        function(err, result) {
+          if (err) next(err)
+          else {
+            res.json({
+              status: 'success',
+              message: 'user answer updated',
+              data: null
+            })
+          }
+        }
+      )
     })
   }
 }
