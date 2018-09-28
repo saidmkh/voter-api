@@ -30,8 +30,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  confirmed_code: {
-    type: String,
+  confirmed: {
+    type: Boolean,
     required: true
   }
 })

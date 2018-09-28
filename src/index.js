@@ -19,7 +19,7 @@ app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.get('/api/v1/', function(req, res) {
-  res.send('GET')
+  res.json({ title: 'API' })
 })
 
 app.use('/api/v1/users/', UserRoute)
