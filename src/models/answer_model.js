@@ -17,12 +17,10 @@ const AnswerSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  question: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Question'
-    }
-  ]
+  question: {
+    type: Schema.Types.ObjectId,
+    ref: 'Questions'
+  }
 })
 
-module.exports = mongoose.model('Answer', AnswerSchema)
+module.exports = mongoose.model('Answers', AnswerSchema)

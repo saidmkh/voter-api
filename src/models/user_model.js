@@ -17,13 +17,12 @@ const UserSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    required: true,
-    default: ''
+    required: false
   },
   answers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Answer'
+      ref: 'answers'
     }
   ],
   verify_code: {
@@ -32,6 +31,7 @@ const UserSchema = new mongoose.Schema({
   },
   confirmed: {
     type: Boolean,
+    default: false,
     required: true
   }
 })

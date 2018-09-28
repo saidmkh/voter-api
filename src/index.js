@@ -1,10 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
+const cors = require('cors')
 const UserRoute = require('./routes/users')
 const QuestionRoute = require('./routes/questions')
 const AnswerRoute = require('./routes/answers')
 const mongoose = require('./config/config')
+
+let jwt = require('jsonwebtoken')
 
 const app = express()
 
@@ -15,6 +18,7 @@ mongoose.connection.on(
   console.error.bind(console, 'Mongo connection failed')
 )
 
+app.use(cors())
 app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -27,7 +31,6 @@ app.use('/api/v1/users/', UserRoute)
 app.use('/api/v1/questions/', validateUser, QuestionRoute)
 app.use('/api/v1/answers/', validateUser, AnswerRoute)
 
-let jwt = require('jsonwebtoken')
 function validateUser(req, res, next) {
   jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(
     err,

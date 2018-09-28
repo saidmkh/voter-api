@@ -12,7 +12,7 @@ const QuestionSchema = new mongoose.Schema({
   answers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Question'
+      ref: 'Answers'
     }
   ]
 })

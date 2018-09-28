@@ -1,4 +1,5 @@
 const AnswerModel = require('../models/answer_model')
+const QuestionModel = require('../models/question_model')
 
 module.exports = {
   getById: function(req, res, next) {
@@ -16,24 +17,26 @@ module.exports = {
   },
 
   create: function(req, res, next) {
-    AnswerModel.create(
-      {
-        text: req.body.text,
-        number: req.body.number,
-        replies: req.body.replies,
-        question: req.body.question
-      },
-      function(err, result) {
-        if (err) next(err)
-        else {
-          res.json({
-            status: 'success',
-            message: 'answer created',
-            data: null
-          })
+    QuestionModel.findOne(req.params.questionId).then(question => {
+      AnswerModel.create(
+        {
+          text: req.body.text,
+          number: req.body.number,
+          replies: req.body.replies,
+          question: question._id
+        },
+        function(err, result) {
+          if (err) next(err)
+          else {
+            res.json({
+              status: 'success',
+              message: 'answer created',
+              data: null
+            })
+          }
         }
-      }
-    )
+      )
+    })
   },
 
   updateById: function(req, res, next) {

@@ -7,7 +7,9 @@ module.exports = {
     UserModel.create(
       {
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        verify_code: req.body.verify_code,
+        confirmed: req.body.confirmed
       },
       function(err, result) {
         if (err) next(err)
