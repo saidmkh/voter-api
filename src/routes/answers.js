@@ -4,9 +4,9 @@ const router = express.Router()
 
 const AnswerController = require('../controllers/answer')
 
-router.get('/:answerId', AnswerController.getById)
+router.get('/:answerId', AnswerController.findOne)
 router.post('/', AnswerController.create)
-router.put('/:answerId', AnswerController.updateById)
-router.delete('/:answerId', AnswerController.deleteById)
+router.put('/:answerId', AnswerController.update)
+router.delete('/:answerId', AnswerController.delete)
 
 module.exports = router

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const data = 'mongodb://localhost/votes_data'
+const data = 'mongodb://admin:admin1@ds161790.mlab.com:61790/votes_data'
 
 mongoose.connect(data)
 mongoose.Promise = global.Promise

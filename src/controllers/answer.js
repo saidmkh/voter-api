@@ -2,73 +2,118 @@ const AnswerModel = require('../models/answer_model')
 const QuestionModel = require('../models/question_model')
 
 module.exports = {
-  getById: function(req, res, next) {
-    console.log(req.body)
-    AnswerModel.findById(req.params.answerId, function(err, answerInfo) {
-      if (err) next(err)
-      else {
-        res.json({
-          status: 'success',
-          message: 'answer found',
-          data: { answers: answerInfo }
-        })
-      }
-    })
-  },
+	findOne: (findOne = (req, res) => {
+		AnswerModel.findById(req.params.answerId)
+			.then(answer => {
+				if (!answer) {
+					return res.status(404).send({ message: 'answer not found' })
+				}
+			})
+			.catch(err => {
+				if (err.kind === 'ObjectId') {
+					return res.status(404).send({
+						message: 'answer not found with id' + req.params.answerId
+					})
+				}
+				return res.status(500).send({
+					message: 'Error retreiving question with id ' + req.params.answerId
+				})
+			})
+	}),
 
-  create: function(req, res, next) {
-    QuestionModel.findOne(req.params.questionId).then(question => {
-      AnswerModel.create(
-        {
-          text: req.body.text,
-          number: req.body.number,
-          replies: req.body.replies,
-          question: question._id
-        },
-        function(err, result) {
-          if (err) next(err)
-          else {
-            res.json({
-              status: 'success',
-              message: 'answer created',
-              data: null
-            })
-          }
-        }
-      )
-    })
-  },
+	create: (create = (req, res) => {
+		if (!req.body.text || !req.body.number || !req.body.question) {
+			return res.status(400).send({
+				message: "This can't be empty"
+			})
+		}
 
-  updateById: function(req, res, next) {
-    AnswerModel.findByIdAndUpdate(
-      {
-        text: req.body.text,
-        number: req.body.number,
-        replies: req.body.replies
-      },
-      function(err, result) {
-        if (err) next(err)
-        else {
-          res.json({
-            status: 'success',
-            message: 'answer updated',
-            data: null
-          })
-        }
-      }
-    )
-  },
+		QuestionModel.findById(req.params.questionId).then(question => {
+			const answer = new AnswerModel({
+				text: req.body.text,
+				number: req.body.number,
+				replies: req.body.replies,
+				question: questionId
+			})
+				.save()
+				.then(answer => {
+					question.answers.push(answer)
+					question.save().then(question => {
+						res.json({
+							status: 'POST success',
+							message: 'answer created'
+						})
+					})
+				})
+				.catch(err => {
+					res.status(500).send({ message: err.message })
+				})
+		})
+	}),
 
-  deleteById: function(req, res, next) {
-    AnswerModel.findByIdAndDelete(req.params.answerId, function(err, result) {
-      if (err) next(err)
-      else {
-        res.json({
-          status: 'success',
-          message: 'answer deleted',
-          data: null
-        })
-      }
-    })
-  }
+	update: (update = (req, res) => {
+		if (!req.body.text || !req.body.number || !req.body.question) {
+			return res.status(400).send({
+				message: "This can't be empty"
+			})
+		}
+
+		AnswerModel.findByIdAndUpdate(
+			req.params.answerId,
+			{
+				text: req.body.text,
+				number: req.body.number,
+				replies: req.body.replies
+			},
+			{ new: true }
+		)
+			.then(answer => {
+				if (!answer) {
+					return res.status(404).send({
+						message: 'answer not found'
+					})
+				}
+				res.json({
+					status: 'Update success',
+					message: 'answer Updated',
+					answer: answer
+				})
+			})
+			.catch(err => {
+				if (err.kind === 'ObjectId') {
+					return res.status(404).send({
+						message: 'answer not found with id ' + req.params.answerId
+					})
+				}
+				return res.status(500).send({
+					message: 'Error retreiving answer with id ' + req.params.answerId
+				})
+			})
+	}),
+
+	delete: (deleteById = (req, res) => {
+		AnswerModel.findByIdAndRemove(req.params.answerId)
+			.then(answer => {
+				if (!answer) {
+					return res.status(404).send({
+						message: 'Answer not found with id' + req.params.answerId
+					})
+				}
+
+				res.json({
+					status: 'Delete success',
+					message: 'answer deleted'
+				})
+			})
+			.catch(err => {
+				if (err.kind === 'ObjectId' || err.name === 'NotFound') {
+					return res.status(404).send({
+						message: 'Answer not found with id ' + req.params.answerId
+					})
+				}
+				return res.status(500).send({
+					message: 'Could not delete not with id ' + req.params.answerId
+				})
+			})
+	})
 }
