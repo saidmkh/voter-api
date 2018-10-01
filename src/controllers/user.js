@@ -69,22 +69,33 @@ module.exports = {
 
   updateAnswerById: (updateAnswerById = (req, res, next) => {
     UserModel.findById(req.params.userId).then(user => {
-      AnswerModel.findById(req.params.answerId)
-        .then(answer => {
-          UserModel.findByIdAndUpdate(req.params.userId)
-            .then(user => {
-              user.answers.push(answer._id)
-              res
-                .json({
-                  status: 'success',
-                  message: 'user answer updated',
-                  data: user
-                })
-                .catch(res.json({ message: message.err }))
-            })
-            .catch(res.json({ message: message.err }))
+      AnswerModel.findById(req.params.answerId).then(answer => {
+        UserModel.findByIdAndUpdate(req.params.userId, {
+          answers: user.answers.concat(answer._id)
         })
-        .catch(res.json({ message: message.err }))
+          .then(answer => {
+            if (!answer) {
+              return res.status(404).send({
+                message: 'answer not found'
+              })
+            }
+            res.json({
+              status: 'Update success',
+              message: 'answer Updated',
+              answer: answer
+            })
+          })
+          .catch(err => {
+            if (err.kind === 'ObjectId') {
+              return res.status(404).send({
+                message: 'answer not found with id ' + req.params.answerId
+              })
+            }
+            return res.status(500).send({
+              message: 'Error retreiving answer with id ' + req.params.answerId
+            })
+          })
+      })
     })
   })
 }
