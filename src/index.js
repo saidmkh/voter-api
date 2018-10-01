@@ -6,10 +6,15 @@ const UserRoute = require('./routes/users')
 const QuestionRoute = require('./routes/questions')
 const AnswerRoute = require('./routes/answers')
 const mongoose = require('./config/config')
+const passport = require('passport')
+const passport_jwt = require('passport-jwt')
 
 let jwt = require('jsonwebtoken')
 
 const app = express()
+
+app.use(passport.initialize())
+require('./_helpers/passport_conf')(passport)
 
 app.set('secretKey', 'votesApi')
 
@@ -28,22 +33,16 @@ app.get('/api/', function(req, res) {
 
 app.use('/api/users/', UserRoute)
 
-app.use('/api/questions/', validateUser, QuestionRoute)
-app.use('/api/questions/', validateUser, AnswerRoute)
-
-function validateUser(req, res, next) {
-  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(
-    err,
-    decoded
-  ) {
-    if (err) {
-      res.json({ status: 'error', message: err.message, data: null })
-    } else {
-      req.body.userId = decoded.id
-      next()
-    }
-  })
-}
+app.use(
+  '/api/questions/',
+  passport.authenticate('jwt', { session: false }),
+  QuestionRoute
+)
+app.use(
+  '/api/questions/',
+  passport.authenticate('jwt', { session: false }),
+  AnswerRoute
+)
 
 app.use(function(req, res, next) {
   let err = new Error('Not Found')
