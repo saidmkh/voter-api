@@ -17,7 +17,7 @@ module.exports = {
         const User = new UserModel({
           email: req.body.email,
           password: req.body.password,
-          verify_code: req.body.verify_code,
+          verify_code: Math.random() * (99999999 - 10000000) + 10000000,
           confirmed: false
         })
 
@@ -29,6 +29,12 @@ module.exports = {
               else {
                 User.password = hash
                 User.save().then(user => {
+                  console.log(
+                    'verify code = \n',
+                    `http://localhost:3000/verify-email?${User.email}=?${
+                      User.verify_code
+                    }`
+                  )
                   res.json(user)
                 })
               }
@@ -39,19 +45,20 @@ module.exports = {
     })
   }),
 
-  authenticate: (authenticate = (req, res) => {
+  verify_email: (verify_email = (req, res) => {
     const email = req.body.email
-    const password = req.body.password
+    const verify_code = req.body.verify_code
 
-    UserModel.findOne({ email }).then(user => {
-      if (!user) {
-        json.send({
-          status: err,
-          message: err.message
-        })
-      }
-      bcrypt.compare(password, user.password).then(Found => {
-        if (Found) {
+    UserModel.findOne({ email })
+      .then(user => {
+        if (!user) {
+          json.send({
+            status: err,
+            message: err.message
+          })
+        }
+        if (user.verify_code === verify_code) {
+          user.confirmed = true
           const payload = {
             id: user.id,
             email: user.email
@@ -60,7 +67,7 @@ module.exports = {
             payload,
             'votesApi',
             {
-              expiresIn: 3600
+              expiresIn: '168h'
             },
             (err, token) => {
               if (err) console.error('Error with Token', err)
@@ -74,10 +81,69 @@ module.exports = {
             }
           )
         } else {
-          errors.password = 'Incorrect Password'
-          return res.status(400).json(errors)
+          res.json({
+            status: 'Error',
+            message: 'Verify code not match'
+          })
         }
       })
+      .catch(err => {
+        console.error(err)
+      })
+  }),
+
+  authenticate: (authenticate = (req, res) => {
+    const email = req.body.email
+    const password = req.body.password
+
+    UserModel.findOne({ email }).then(user => {
+      if (!user) {
+        json.send({
+          status: err,
+          message: err.message
+        })
+      }
+      if (user.confirmed === false) {
+        res.json({
+          status: 'error',
+          message: 'verify your email'
+        })
+        console.log(
+          'verify you email please, \n',
+          `http://localhost:3000/verify-email?${user.email}=?${
+            user.verify_code
+          }`
+        )
+      } else {
+        bcrypt.compare(password, user.password).then(Found => {
+          if (Found) {
+            const payload = {
+              id: user.id,
+              email: user.email
+            }
+            jwt.sign(
+              payload,
+              'votesApi',
+              {
+                expiresIn: '168h'
+              },
+              (err, token) => {
+                if (err) console.error('Error with Token', err)
+                else {
+                  res.json({
+                    success: true,
+                    token: `Token ${token}`,
+                    data: user
+                  })
+                }
+              }
+            )
+          } else {
+            errors.password = 'Incorrect Password'
+            return res.status(400).json(errors)
+          }
+        })
+      }
     })
   }),
 

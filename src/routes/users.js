@@ -7,8 +7,17 @@ const router = express.Router()
 const UserController = require('../controllers/user')
 
 router.post('/register', UserController.create)
+router.post('/verify_email', UserController.verify_email)
 router.post('/authenticate', UserController.authenticate)
-router.post('/:userId/answer/:answerId', UserController.updateAnswerById)
-router.post('/:me', getUser, passport.authenticate('jwt', { session: false }))
+router.post(
+  '/:userId/answer/:answerId',
+  UserController.updateAnswerById,
+  passport.authenticate('jwt', { session: false })
+)
+router.post(
+  '/:me',
+  UserController.getUser,
+  passport.authenticate('jwt', { session: false })
+)
 
 module.exports = router
