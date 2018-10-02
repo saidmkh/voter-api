@@ -17,7 +17,9 @@ module.exports = {
         const User = new UserModel({
           email: req.body.email,
           password: req.body.password,
-          verify_code: Math.random() * (99999999 - 10000000) + 10000000,
+          verify_code: Math.floor(
+            Math.random() * (999999999999 - 100000000000) + 100000000000
+          ),
           confirmed: false
         })
 
@@ -31,8 +33,8 @@ module.exports = {
                 User.save().then(user => {
                   console.log(
                     'verify code = \n',
-                    `http://localhost:3000/verify-email?${User.email}=?${
-                      User.verify_code
+                    `http://localhost:3000/verify-email?=${user.email}?=${
+                      user.verify_code
                     }`
                   )
                   res.json(user)
@@ -59,6 +61,7 @@ module.exports = {
         }
         if (user.verify_code === verify_code) {
           user.confirmed = true
+          user.save()
           const payload = {
             id: user.id,
             email: user.email
@@ -74,7 +77,7 @@ module.exports = {
               else {
                 res.json({
                   success: true,
-                  token: `Token ${token}`,
+                  token: `Token --- ${token}`,
                   data: user
                 })
               }
@@ -110,7 +113,7 @@ module.exports = {
         })
         console.log(
           'verify you email please, \n',
-          `http://localhost:3000/verify-email?${user.email}=?${
+          `http://localhost:3000/verify-email?=${user.email}?=${
             user.verify_code
           }`
         )
@@ -132,7 +135,7 @@ module.exports = {
                 else {
                   res.json({
                     success: true,
-                    token: `Token ${token}`,
+                    token: `Token --- ${token}`,
                     data: user
                   })
                 }
