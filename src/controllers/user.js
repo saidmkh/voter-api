@@ -14,11 +14,11 @@ module.exports = {
     if (!validate) {
       return res.status(400).json(errors)
     }
-
     UserModel.findOne({
       email: req.body.email
     }).then(user => {
       if (user) {
+        console.log(user)
         return res.status(400).json({
           email: 'Email already exists'
         })

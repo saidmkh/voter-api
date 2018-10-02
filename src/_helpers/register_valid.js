@@ -1,4 +1,4 @@
-import checkInputEmpty from './input_valid'
+let checkInputEmpty = require('./input_valid')
 
 module.exports = function registerValid(data) {
   const email_regex = /\S+@\S+\.\S+/
@@ -13,7 +13,7 @@ module.exports = function registerValid(data) {
     errors.email = 'email cant be empty'
   }
 
-  if (!data.email.match(email_regex)) {
+  if (data.email.match(email_regex)) {
     errors.email = 'email is not valid'
   }
 

@@ -1,4 +1,4 @@
-import checkInputEmpty from './input_valid'
+const checkInputEmpty = require('./input_valid')
 
 module.exports = function loginValid(data) {
   const email_regex = /\S+@\S+\.\S+/
