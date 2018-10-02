@@ -8,7 +8,7 @@ const UserController = require('../controllers/user')
 
 router.post('/register', UserController.create)
 router.post('/verify_email', UserController.verify_email)
-router.post('/authenticate', UserController.authenticate)
+router.post('/login', UserController.authenticate)
 router.post(
   '/:userId/answer/:answerId',
   UserController.updateAnswerById,

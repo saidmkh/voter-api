@@ -4,8 +4,17 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 
+const registerValid = require('../_helpers/register_valid')
+const loginValid = require('../_helpers/login_valid')
+
 module.exports = {
   create: (create = (req, res) => {
+    const { errors, validate } = registerValid(req.body)
+
+    if (!validate) {
+      return res.status(400).json(errors)
+    }
+
     UserModel.findOne({
       email: req.body.email
     }).then(user => {
@@ -96,6 +105,12 @@ module.exports = {
   }),
 
   authenticate: (authenticate = (req, res) => {
+    const { errors, validate } = loginValid(req.body)
+
+    if (!validate) {
+      return res.status(400).json(errors)
+    }
+
     const email = req.body.email
     const password = req.body.password
 
