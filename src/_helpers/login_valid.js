@@ -13,9 +13,9 @@ module.exports = function loginValid(data) {
     errors.email = 'email cant be empty'
   }
 
-  if (!data.email.match(email_regex)) {
-    errors.email = 'email is not valid'
-  }
+  //if (!data.email.match(email_regex)) {
+  // errors.email = 'email is not valid'
+  //}
 
   if (data.password.lenth < 5) {
     errors.password = 'password too short'

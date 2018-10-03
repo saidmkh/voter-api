@@ -9,6 +9,7 @@ const loginValid = require('../_helpers/login_valid')
 
 module.exports = {
   create: (create = (req, res) => {
+    console.log(req.body)
     const { errors, validate } = registerValid(req.body)
 
     if (!validate) {
@@ -17,6 +18,7 @@ module.exports = {
     UserModel.findOne({
       email: req.body.email
     }).then(user => {
+      console.log(user)
       if (user) {
         console.log(user)
         return res.status(400).json({

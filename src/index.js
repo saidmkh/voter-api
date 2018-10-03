@@ -25,7 +25,8 @@ mongoose.connection.on(
 
 app.use(cors())
 app.use(logger('dev'))
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/api/', function(req, res) {
   res.json({ title: 'API' })
