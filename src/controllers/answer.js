@@ -34,7 +34,7 @@ module.exports = {
       const answer = new AnswerModel({
         text: req.body.text,
         number: req.body.number,
-        replies: req.body.replies,
+        replies: 0,
         question: req.params.questionId
       })
         .save()

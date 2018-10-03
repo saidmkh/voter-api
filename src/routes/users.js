@@ -14,9 +14,10 @@ router.post(
   UserController.updateAnswerById,
   passport.authenticate('jwt', { session: false })
 )
-router.post(
-  '/:me',
-  UserController.getUser,
+router.get('/users', UserController.getAll)
+router.get(
+  '/:userId',
+  UserController.getUserAnswers,
   passport.authenticate('jwt', { session: false })
 )
 

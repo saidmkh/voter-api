@@ -9,7 +9,6 @@ const loginValid = require('../_helpers/login_valid')
 
 module.exports = {
   create: (create = (req, res) => {
-    console.log(req.body)
     const { errors, validate } = registerValid(req.body)
 
     if (!validate) {
@@ -167,11 +166,18 @@ module.exports = {
     })
   }),
 
-  getUser: (getUser = (req, res) => {
-    return res.json({
-      id: req.user.id,
-      email: req.user.email
-    })
+  getUserAnswers: (getUserAnswers = (req, res) => {
+    UserModel.findById(req.params.userId)
+      .populate('answers')
+      .then(user => res.json(user.answers))
+      .catch(err => res.status(404).json({ status: err, message: err.message }))
+  }),
+
+  getAll: (getAll = (req, res) => {
+    UserModel.find()
+      .populate('answers')
+      .then(users => res.json(users))
+      .catch(err => res.status(404).json({ status: err, message: err.message }))
   }),
 
   updateAnswerById: (passport.authenticate('jwt', { session: false }),

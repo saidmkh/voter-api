@@ -34,11 +34,7 @@ app.get('/api/', function(req, res) {
 
 app.use('/api/users/', UserRoute)
 
-app.use(
-  '/api/questions/',
-  passport.authenticate('jwt', { session: false }),
-  QuestionRoute
-)
+app.use('/api/questions/', QuestionRoute)
 app.use(
   '/api/questions/',
   passport.authenticate('jwt', { session: false }),

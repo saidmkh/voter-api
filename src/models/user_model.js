@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
   answers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'answers'
+      ref: 'Answers'
     }
   ],
   verify_code: {
