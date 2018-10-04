@@ -1,4 +1,5 @@
 const UserModel = require('../models/user_model')
+const QuestionModel = require('../models/question_model')
 const AnswerModel = require('../models/answer_model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -169,7 +170,16 @@ module.exports = {
   getUserAnswers: (getUserAnswers = (req, res) => {
     UserModel.findById(req.params.userId)
       .populate('answers')
-      .then(user => res.json(user.answers))
+      .then(user => {
+        console.log(user.answers)
+        let filter = []
+        let question = []
+        for (let i = 0; i < user.answers.length; i++) {
+          filter.push(user.answers[i].question)
+        }
+        res.json(filter)
+        console.log('object =-------------------', filter)
+      })
       .catch(err => res.status(404).json({ status: err, message: err.message }))
   }),
 
