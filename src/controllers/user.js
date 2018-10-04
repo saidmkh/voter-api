@@ -171,14 +171,11 @@ module.exports = {
     UserModel.findById(req.params.userId)
       .populate('answers')
       .then(user => {
-        console.log(user.answers)
-        let filter = []
-        let question = []
+        let questions = []
         for (let i = 0; i < user.answers.length; i++) {
-          filter.push(user.answers[i].question)
+          questions.push(user.answers[i].question)
         }
-        res.json(filter)
-        console.log('object =-------------------', filter)
+        res.json(questions)
       })
       .catch(err => res.status(404).json({ status: err, message: err.message }))
   }),

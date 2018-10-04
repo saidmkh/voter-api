@@ -4,17 +4,16 @@ const AnswerModel = require('../models/answer_model')
 module.exports = {
   getAll: (getAll = (req, res) => {
     QuestionModel.find()
-      .populate('Answers')
+      .populate('answers')
       .then(questions => res.json(questions))
       .catch(err => res.status(404).json({ status: err, message: message.err }))
   }),
 
   findOne: (findOne = (req, res) => {
     QuestionModel.findById(req.params.questionId)
-      .then(question => {
-        if (!question) {
-          return res.status(404).send({ message: 'question not found' })
-        }
+      .populate('answers')
+      .then(questions => {
+        res.json(questions)
       })
       .catch(err => {
         if (err.kind === 'ObjectId') {

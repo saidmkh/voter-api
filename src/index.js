@@ -35,11 +35,7 @@ app.get('/api/', function(req, res) {
 app.use('/api/users/', UserRoute)
 
 app.use('/api/questions/', QuestionRoute)
-app.use(
-  '/api/questions/',
-  passport.authenticate('jwt', { session: false }),
-  AnswerRoute
-)
+app.use('/api/questions/', AnswerRoute)
 
 app.use(function(req, res, next) {
   let err = new Error('Not Found')
