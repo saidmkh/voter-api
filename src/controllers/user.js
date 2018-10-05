@@ -180,20 +180,24 @@ module.exports = {
       .catch(err => res.status(404).json({ status: err, message: err.message }))
   }),
 
-  getAll: (getAll = (req, res) => {
-    UserModel.find()
-      .populate('answers')
-      .then(users => res.json(users))
-      .catch(err => res.status(404).json({ status: err, message: err.message }))
-  }),
-
   updateAnswerById: (passport.authenticate('jwt', { session: false }),
   (updateAnswerById = (req, res, next) => {
-    UserModel.findById(req.params.userId).then(user => {
-      AnswerModel.findById(req.params.answerId).then(answer => {
-        UserModel.findByIdAndUpdate(req.params.userId, {
-          answers: user.answers.concat(answer._id)
+    UserModel.findById(req.params.userId)
+      .populate('answers')
+      .then(user => {
+        for (let i = 0; i < user.answers.length; i++) {
+          if (user.answers[i].question == req.params.questionId) {
+            return res.json({
+              status: 'error',
+              message: 'you already voted'
+            })
+          }
+        }
+        AnswerModel.findById(req.params.answerId).update({
+          $inc: { replies: 1 }
         })
+        UserModel.findById(req.params.userId, console.log('ddddd', answers))
+          .update({ $push: { answers: req.params.answerId } })
           .then(answer => {
             if (!answer) {
               return res.status(404).send({
@@ -202,8 +206,7 @@ module.exports = {
             }
             res.json({
               status: 'Update success',
-              message: 'answer Updated',
-              answer: answer
+              message: 'answer Updated'
             })
           })
           .catch(err => {
@@ -217,6 +220,5 @@ module.exports = {
             })
           })
       })
-    })
   }))
 }

@@ -9,12 +9,10 @@ const UserController = require('../controllers/user')
 router.post('/register', UserController.create)
 router.post('/verify_email', UserController.verify_email)
 router.post('/login', UserController.authenticate)
-router.post(
-  '/:userId/answer/:answerId',
-  UserController.updateAnswerById,
-  passport.authenticate('jwt', { session: false })
+router.patch(
+  '/:userId/question/:questionId/answer/:answerId',
+  UserController.updateAnswerById
 )
-router.get('/users', UserController.getAll)
 router.get(
   '/:userId',
   UserController.getUserAnswers,

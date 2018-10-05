@@ -22,7 +22,7 @@ module.exports = {
   }),
 
   create: (create = (req, res) => {
-    if (!req.body.text || !req.body.number || !req.body.replies) {
+    if (!req.body.text) {
       return res.status(400).send({
         message: "This can't be empty"
       })
