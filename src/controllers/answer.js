@@ -39,6 +39,7 @@ module.exports = {
       })
         .save()
         .then(answer => {
+          question.text = req.params.questionId
           question.answers.push(answer._id)
           question
             .save()
