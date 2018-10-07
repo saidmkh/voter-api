@@ -193,10 +193,14 @@ module.exports = {
 						})
 					}
 				}
-				AnswerModel.findById(req.params.answerId).update({
-					$inc: { replies: 1 }
-				})
-				UserModel.findById(req.params.userId, console.log('ddddd', answers))
+				AnswerModel.findById(req.params.answerId)
+					.update({
+						$inc: { replies: 1 }
+					})
+					.then(answer => {
+						answer.save()
+					})
+				UserModel.findById(req.params.userId)
 					.update({ $push: { answers: req.params.answerId } })
 					.then(answer => {
 						if (!answer) {
