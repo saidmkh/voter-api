@@ -15,7 +15,7 @@ const AnswerSchema = new mongoose.Schema({
 	},
 	replies: {
 		type: Number,
-		required: true
+		default: 0
 	},
 	question: {
 		type: Schema.Types.ObjectId,
