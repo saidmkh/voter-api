@@ -6,7 +6,7 @@ module.exports = function loginValid(data) {
 	data.email = !checkInputEmpty(data.email) ? data.email : ''
 	data.password = !checkInputEmpty(data.password) ? data.password : ''
 
-	if (data.email.lenth < 3) {
+	if (data.email.lenth < 5) {
 		errors.email = 'email cant be empty'
 	}
 
