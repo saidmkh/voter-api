@@ -9,16 +9,12 @@ module.exports = function registerValid(data) {
 		? data.repeat_password
 		: ''
 
-	if (data.email.lenth < 5) {
-		errors.email = 'email cant be empty'
-	}
-
 	//if (data.email.match(email_regex)) {
 	//  errors.email = 'email is not valid'
 	//}
 
-	if (data.password == data.repeat_password) {
-		errors.repeat_password = 'passwords didnt equals'
+	if (data.password !== data.repeat_password) {
+		errors.password = 'passwords didnt equals'
 	}
 
 	return {
